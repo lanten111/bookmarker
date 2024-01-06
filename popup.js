@@ -26,16 +26,19 @@ function getTitle() {
 function sendToServer(from,url, icon, title ) {
 
   
-  var nameInput = document.getElementById("nameInput");
-  var catergoryInput = document.getElementById("catergoryInput");
+  var nameInput = document.getElementById("nameInput").value;
+  var catergoryInput = document.getElementById("catergoryInput").value;
 
+  if (catergoryInput === "" || catergoryInput == null) {
+      catergoryInput = "uncategorized"
+  }
   const payload = {
     url: url,
     title: title,
     icon: icon,
     from: from,
-    name: nameInput.value,
-    category: catergoryInput.value
+    name: nameInput,
+    category: catergoryInput
   };
 
  console.log("Payload:", payload);
@@ -58,12 +61,13 @@ function sendToServer(from,url, icon, title ) {
   }).then( response => {
       if (response.ok) {
         nameInput.value = "";
-        catergoryInput.value = "";;
+        catergoryInput.value = "";
         console.log(`${response} response`);
-        alert(response.object);
+        // alert(response.object);
       } else {
-        alert(response.text());
-        console.log(`${response.status} sent to the endpoint successfully`);
+        // alert(response.text());
+          displaySuccessMessage(`${response["object"]}`, "green")
+        console.log(`${response} sent to the endpoint successfully`);
       }});
   } else {
 	  alert('Add url to send bookmark');
@@ -72,6 +76,13 @@ function sendToServer(from,url, icon, title ) {
 
 }
 
+function displaySuccessMessage(message, color) {
+        var container = document.getElementById("success-container");
+        var paragraph = document.createElement("p");
+        paragraph.style.color = color;
+        paragraph.textContent = message;
+        container.appendChild(paragraph);
+}
 function getTabIcon(tabId) {
   chrome.tabs.get(tabId, function(tab) {
     if (chrome.runtime.lastError) {

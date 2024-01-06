@@ -19,6 +19,8 @@ button {
   width: 220px;
 }
 
+.success-container {
+}
 .container{
   display: flex;
 }
