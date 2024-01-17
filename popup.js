@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('save_url').addEventListener('click', saveUrlInputValue);
-  document.getElementById('save_token').addEventListener('click', saveTokenInputValue);
+  // document.getElementById('save_token').addEventListener('click', saveTokenInputValue);
   populateInputValue();
+  populateInputName();
 });
 
 function getTab(from) {
@@ -32,6 +33,11 @@ function sendToServer(from,url, icon, title ) {
   if (catergoryInput === "" || catergoryInput == null) {
       catergoryInput = "uncategorized"
   }
+
+  if (nameInput === "" || nameInput == null) {
+      nameInput = title
+  }
+
   const payload = {
     url: url,
     title: title,
@@ -59,6 +65,7 @@ function sendToServer(from,url, icon, title ) {
     },
     body: JSON.stringify(payload),
   }).then( response => {
+                console.log(`${response} xxxxx`);
       if (response.ok) {
         nameInput.value = "";
         catergoryInput.value = "";
@@ -66,8 +73,8 @@ function sendToServer(from,url, icon, title ) {
         // alert(response.object);
       } else {
         // alert(response.text());
-          displaySuccessMessage(`${response["object"]}`, "green")
-        console.log(`${response} sent to the endpoint successfully`);
+          console.log(`${response} sent to the endpoint successfully`);
+          displaySuccessMessage(`${response}`, "green")
       }});
   } else {
 	  alert('Add url to send bookmark');
@@ -77,11 +84,13 @@ function sendToServer(from,url, icon, title ) {
 }
 
 function displaySuccessMessage(message, color) {
-        var container = document.getElementById("success-container");
-        var paragraph = document.createElement("p");
-        paragraph.style.color = color;
-        paragraph.textContent = message;
-        container.appendChild(paragraph);
+    document.getElementById("success-container").remove();
+    document.getElementById("p").remove();
+    var container = document.getElementById("success-container");
+    var paragraph = document.createElement("p");
+    paragraph.style.color = color;
+    paragraph.textContent = message;
+    container.appendChild(paragraph);
 }
 function getTabIcon(tabId) {
   chrome.tabs.get(tabId, function(tab) {
@@ -128,39 +137,28 @@ function populateInputValue() {
   }
 }
 
-bookmark = document.getElementById("bookmark");
-bookmark_online = document.getElementById("bookmark_online");
-bookmark_local = document.getElementById("bookmark_local");
-bookmark_online_local = document.getElementById("bookmark_online_local");
-add_spotify_artist = document.getElementById("add_spotify_artist");
-add_spotify_soundtrack = document.getElementById("add_spotify_soundtrack");
-add_spotify_podcasts = document.getElementById("add_spotify_podcasts");
+function populateInputName() {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        var name =  tabs[0].title;
+        console.log(`${name} loaded`);
+        if (name) {
+        document.getElementById('nameInput').value = name;
+        }
+  });
 
+}
+
+bookmark = document.getElementById("bookmark");
+application = document.getElementById("application");
+download_spotify = document.getElementById("download_spotify");
+
+application.addEventListener("click", function () {
+  getTab("application");
+});
 
 bookmark.addEventListener("click", function () {
   getTab("bookmark");
 });
-
-bookmark_online.addEventListener("click", function () {
-  getTab("bookmark_online");
-});
-
-bookmark_local.addEventListener("click", function () {
-  getTab("bookmark_local");
-});
-
-bookmark_online_local.addEventListener("click", function () {
-  getTab("bookmark_online_local");
-});
-
-add_spotify_artist.addEventListener("click", function () {
-  getTab("add_spotify_artist");
-});
-
-add_spotify_soundtracks.addEventListener("click", function () {
-  getTab("add_spotify_soundtracks");
-});
-
-add_spotify_podcasts.addEventListener("click", function () {
-  getTab("add_spotify_podcasts");
-});
+// download_spotify.addEventListener("click", function () {
+//   getTab("download spotify");
+// });

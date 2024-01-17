@@ -6,7 +6,7 @@ body {
 }
 
 input{
-  width: 106px;
+  width: 240px;
   margin: 3px;
   border-radius: 20px;
   height: 26px;
@@ -16,7 +16,7 @@ button {
   margin-top: 20px;
   font-size: 20px;
   text-align: center;
-  width: 220px;
+  width: 240px;
 }
 
 .success-container {
